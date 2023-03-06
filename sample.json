@@ -1,0 +1,40 @@
+{
+    "depositPlans": [
+        {
+            "type": "one-time",
+            "allocations": [
+                {
+                    "portfolioId": 1,
+                    "amount": 10000
+                },
+                {
+                    "portfolioId": 2,
+                    "amount": 500
+                }
+            ]
+        },
+        {
+            "type": "monthly",
+            "allocations": [
+                {
+                    "portfolioId": 1,
+                    "amount": 0
+                },
+                {
+                    "portfolioId": 2,
+                    "amount": 100
+                }
+            ]
+        }
+    ],
+    "fundDeposits": [
+        {
+            "customerId": 1,
+            "amount": 10500
+        },
+        {
+            "customerId": 1,
+            "amount": 100
+        }
+    ]
+}

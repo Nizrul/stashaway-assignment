@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Customers {
+  id          Int      @id @default(autoincrement())
+  createdDate DateTime @default(now())
+  updatedDate DateTime @default(now())
+
+  fundDeposits FundDeposits[]
+  portfolios   Portfolios[]
+  depositPlans DepositPlans[]
+}
+
+model FundDeposits {
+  id            Int       @id @default(autoincrement())
+  customerId    Int
+  amount        Decimal
+  createdDate   DateTime  @default(now())
+  updatedDate   DateTime  @default(now())
+  allocatedDate DateTime?
+
+  customer Customers @relation(fields: [customerId], references: [id])
+
+  @@index([customerId])
+}
+
+model Portfolios {
+  id          Int      @id @default(autoincrement())
+  customerId  Int
+  name        String
+  createdDate DateTime @default(now())
+  updatedDate DateTime @default(now())
+
+  customer     Customers                @relation(fields: [customerId], references: [id])
+  depositPlans DepositPlanAllocations[]
+
+  @@index([customerId])
+}
+
+model DepositPlans {
+  id                 Int       @id @default(autoincrement())
+  customerId         Int
+  type               String
+  createdDate        DateTime  @default(now())
+  updatedDate        DateTime  @default(now())
+  lastAllocationDate DateTime?
+  // deactivated Date will be used to ensure that only one of each type of active deposit plans can exist for one customer
+  deactivatedDate    DateTime?
+
+  customer   Customers                @relation(fields: [customerId], references: [id])
+  portfolios DepositPlanAllocations[]
+
+  @@unique([customerId, type, deactivatedDate])
+  @@index([customerId])
+  @@index([type])
+}
+
+model DepositPlanAllocations {
+  portfolioId   Int
+  depositPlanId Int
+  createdDate   DateTime @default(now())
+  updatedDate   DateTime @default(now())
+
+  portfolio   Portfolios   @relation(fields: [portfolioId], references: [id])
+  depositPlan DepositPlans @relation(fields: [depositPlanId], references: [id])
+
+  @@id([portfolioId, depositPlanId])
+}
